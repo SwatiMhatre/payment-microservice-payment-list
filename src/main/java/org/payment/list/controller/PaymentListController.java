@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,20 +28,12 @@ public class PaymentListController {
 	}
 	
 	@CrossOrigin
-	@GetMapping(value="/save")
-	public String saveData(){
-		PaymentDetails details = new PaymentDetails();
-		details.setId(12L);
-		details.setAmount((long) 20.21);
-		details.setCurrency("INR");
-		details.setCreditAccount("test123");
-		details.setDebitAccount("test123");
-		details.setExecutionDate("16-07-1988");
-		details.setReason("test123");
-		
+	@PostMapping(value="/save")
+	public String saveData(@RequestBody PaymentDetails details){
+		System.out.println("person details::::"+details);
 		repository.save(details);
 		
 		return "data saved!!";
 	}
-
+	
 }
