@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debit-trx
+  labels:
+    app: debit-trx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debit-trx
+  template:
+    metadata:
+      labels:
+        app: debit-trx
+    spec:
+      containers:
+      - name: debit-trx
+        image: "457398/payment-alp-debit-trx:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+      imagePullSecrets:
+      - name: d-acr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: debit-trx
+  #annotations:
+    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8081
+      name: http
+  selector:
+    app: debit-trx
