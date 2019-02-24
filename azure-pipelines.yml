@@ -1,0 +1,60 @@
+# Docker image
+# Build a Docker image to deploy, run, or push to a container registry.
+# Add steps that use Docker Compose, tag images, push to a registry, run an image, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+variables:
+  imageName: 'your-container-image-name:$(build.buildId)'
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: false
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+    options: '-Dbuildnumber=$(Build.SourceVersion)'
+
+- task: Docker@0 # task for building image
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'docker-alp-grp12'
+    action: 'Build an image'
+    dockerFile: './Dockerfile'
+    imageName: '457398/payment-alp-payment-list:$(Build.SourceVersion)'
+    includeLatestTag: true
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    buildArguments: 'JAR_FILE=target/payment-microservice-payment-list-0.0.1-SNAPSHOT.jar'
+ 
+- task: Docker@0
+  displayName: 'Push image'
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'docker-alp-grp12'
+    action: 'Push an image'
+    imageName: '457398/payment-alp-payment-list:$(Build.SourceVersion)'
+    includeLatestTag: true
+    includeSourceTags: true
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    contents: '**/k8s/**'
+    TargetFolder: '$(Build.StagingDirectory)'
+ 
+  # Publish build artifacts to Azure Pipelines/TFS or a file share
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.StagingDirectory)/k8s'
+    artifactName: 'k8s'

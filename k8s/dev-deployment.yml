@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-list
+  labels:
+    app: payment-list
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-list
+  template:
+    metadata:
+      labels:
+        app: payment-list
+    spec:
+      containers:
+      - name: payment-list
+        image: "457398/payment-alp-payment-list:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+      imagePullSecrets:
+      - name: d-acr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-list
+  #annotations:
+    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8082
+      name: http
+  selector:
+    app: payment-list
