@@ -1,6 +1,7 @@
 package org.payment.list.dto;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,8 +19,9 @@ public class PaymentDetails {
 	@Column(name = "credit_account")
 	private String creditAccount;
 	
-	@Column(name = "execution_date")
-	private String executionDate;
+	@Embedded
+	//@Column(name = "execution_date")
+	private ExecutionDate executionDate;
 	
 	@Column(name = "amount")
 	private Long amount;
@@ -58,11 +60,11 @@ public class PaymentDetails {
 		this.creditAccount = creditAccount;
 	}
 
-	public String getExecutionDate() {
+	public ExecutionDate getExecutionDate() {
 		return executionDate;
 	}
 
-	public void setExecutionDate(String executionDate) {
+	public void setExecutionDate(ExecutionDate executionDate) {
 		this.executionDate = executionDate;
 	}
 
