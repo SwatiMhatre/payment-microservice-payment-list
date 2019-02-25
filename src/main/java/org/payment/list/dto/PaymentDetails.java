@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class PaymentDetails {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 
 	@Column(name = "debit_account")
 	private String debitAccount;
@@ -36,11 +36,11 @@ public class PaymentDetails {
 
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
