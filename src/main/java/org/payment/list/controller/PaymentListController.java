@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @ControllerAdvice
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequestMapping(value="/payment-list")
 public class PaymentListController {
 	@Autowired
